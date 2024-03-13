@@ -35,7 +35,7 @@
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
-            <div class="sidebar-brand-text mx-3">ADMIN PAGE</div>
+            <div class="sidebar-brand-text mx-3">HOME PAGE</div>
         </a>
 
         <!-- Divider -->

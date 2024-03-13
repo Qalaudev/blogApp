@@ -34,8 +34,8 @@ Route::middleware('auth')->group(function(){
 
 
         //comment route with admin panel
-        Route::get('/commentary',[AdminCommentaryController::class,'commentary'])->name('management.commentary');
-        Route::delete('/commentary/{commentary}/delete',[AdminCommentaryController::class,'deleteCommentary'])->name('management.deleteComment');
+        Route::get('/commentary', [AdminCommentaryController::class,'commentary'])->name('management.commentary');
+        Route::delete('/commentary/{comment}/delete', [AdminCommentaryController::class,'deleteCommentary'])->name('management.deleteComment');
 
 
         //post route with admin panel

@@ -3,20 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
 class AdminCommentaryController extends Controller
 {
-    public function commentary(Comment $comment)
+    public function commentary()
     {
-        $comment = Comment::with('user')->get();
-        return view('admin.commentary',['comment'=>$comment]);
+        $comments = Comment::with('post')->get(); // Получить все комментарии
+        return view('admin.commentary', ['comments' => $comments]);
     }
 
     public function deleteCommentary(Comment $comment)
     {
-        $comment->delete();
-        return redirect()->route('adm.management.commentary')->with('message','Comment deleted');
+        $comment->delete(); // Удалить комментарий
+        return redirect()->route('adm.management.commentary')->with('message', 'Comment deleted');
     }
 }

@@ -13,7 +13,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($comment as $commentary)
+        @foreach($comments as $commentary)
             <tr>
                 <th scope="row">{{$commentary->id}}</th>
                 <td>{{$commentary->content}}</td>
