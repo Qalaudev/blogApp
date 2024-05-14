@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCommentaryController;
 use App\Http\Controllers\Admin\AdminPostController;
+use App\Http\Controllers\WelcomeController;
 
 Route::resource('/posts',PostController::class)->middleware('auth');
 
@@ -72,6 +73,11 @@ Route::middleware('auth')->group(function(){
 
         //logout
         Route::post('/logout',[LoginController::class,'logout'])->name('logout');
-
+        Route::get('/index',[WelcomeController::class,'index'])->name('welcome');
+        Route::get('/plan',[WelcomeController::class,'plan'])->name('plan');
+        Route::get('/calendar',[WelcomeController::class,'calendar'])->name('calendar');
+        Route::get('/academic',[WelcomeController::class,'academic'])->name('academic');
+        Route::get('/message',[WelcomeController::class,'message'])->name('message');
+        Route::get('/settings',[WelcomeController::class,'settings'])->name('settings');
 
 
