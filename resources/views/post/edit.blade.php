@@ -11,6 +11,8 @@
                     <input class="form-control" type="text" id="title" name="title" required value="{{$post->title}}"><br>
                     <label for="content">Content:</label><br>
                     <textarea class="form-control" id="content" name="content" required>{{$post->content}}</textarea><br>
+                    <label for="image">Image</label><br>
+                    <input type="file" name="image" id="image" class="form-control"><br>
                     <select class="form-control" name="category_id" id="category_id">
                         @foreach($categories as $category)
                             <option @if($category->id == $post->category_id) selected @endif value="{{$category->id}}">{{$category->name}}</option>

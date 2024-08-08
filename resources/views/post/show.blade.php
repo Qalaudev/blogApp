@@ -1,75 +1,123 @@
 @extends('layouts.app')
+
 @section('content')
-<style>
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
-    .button-container {
-        display: flex;
-        justify-content: space-between; /* или другие значения в зависимости от вашего дизайна */
-    }
+    <style>
+        /* Стили для ссылок */
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
-</style>
-<div class="container d-flex justify-content-center align-items-center">
-    <div class="col-6">
-        <div class="row">
-            <a class="btn btn-info" href="{{route('posts.index')}}">Страницы Index</a>
-            <h4></h4>
-            <h4 class="form-control">{{ $post->title }}</h4>
-            <h4 class="form-control"> {{ $post->content}} </h4>
+        /* Контейнер для кнопок */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px; /* Добавим отступ сверху */
+        }
 
-            <div class="button-container">
-                @can('update', $post)
-                    <a class="form-control" style="text-align: center; flex: 1;" href="{{ route('posts.edit', $post->id) }}">Edit</a>
-                @endcan
-                @can('delete',$post)
-                    <form action="{{route('posts.destroy',$post->id)}}" method="POST" style="flex: 1;">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger form-control" onclick="return confirm('Вы хотите удалить?')">Delete</button>
-                    </form>
-                @endcan
-            </div>
+        /* Стили для карточек */
+        .card {
+            margin-top: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            border-radius: 5px;
+        }
 
+        /* Стили для заголовков карточек */
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
 
+        /* Стили для содержания карточек */
+        .card-content {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
 
-            {{--delete post--}}
-            <h4></h4>
+        /* Стили для комментариев */
+        .comment {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
 
-            {{--comment form--}}
-            <form action="{{route('store.comment', $post->id)}}" method="post">
-                @csrf
-                @method('POST')
-                <h4 style="text-align: center">Comment</h4>
-                <input type="hidden" name="post_id" value="{{$post->id}}">
-                <textarea name="content" class="form-control"></textarea><br>
-                <button class="form-control btn btn-info">Send Comment</button>
-            </form>
+        /* Стили для имени пользователя в комментариях */
+        .comment-author {
+            font-weight: bold;
+            color: #555;
+        }
 
+        /* Кнопки для редактирования и удаления комментариев */
+        .comment-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+    </style>
 
-            <div></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- Ссылка на страницу Index -->
+                        <a class="btn btn-info btn-block" href="{{ route('posts.index') }}">Страница Index</a>
 
-            @foreach( $post->comments as $comment )
-                <p>{{ $comment->content }}</p>
-                <small>{{ $comment->user->name }}</small>
+                        <!-- Заголовок и содержание поста -->
+                        <h4 class="card-title">{{ $post->title }}</h4>
+                        <p class="card-content">{{ $post->content }}</p>
 
-                <div><br></div>
+                        <!-- Кнопки для редактирования и удаления поста -->
+                        <div class="button-container">
+                            @can('update', $post)
+                                <a class="btn btn-warning btn-block" href="{{ route('posts.edit', $post->id) }}">Редактировать</a>
+                            @endcan
+                            @can('delete', $post)
+                                <form action="{{ route('posts.destroy', $post->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-block" onclick="return confirm('Вы уверены?')">Удалить</button>
+                                </form>
+                            @endcan
+                        </div>
 
-                <div class="button-container">
-                    @can('delete',$comment)
-                        <a class="form-control" style="text-align: center; flex: 1;" href="{{ route('edit.comment',$comment->id) }}">Edit</a>
-                        <form action="{{ route('destroy.comment',$comment->id) }}" method="post" style="flex: 1;">
-                            <input type="hidden" name="commentId" value="{{$comment->id}}">
+                        <!-- Форма для комментариев -->
+                        <h4>Комментарии</h4>
+                        <form action="{{ route('store.comment', $post->id) }}" method="POST">
                             @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger form-control" onclick="return confirm('Are you sure?')">Delete</button>
+                            @method('POST')
+                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                            <textarea name="content" class="form-control" placeholder="Ваш комментарий"></textarea><br>
+                            <button class="btn btn-info btn-block">Отправить комментарий</button>
                         </form>
-                    @endcan
-                </div>
-            @endforeach
 
+                        <!-- Комментарии -->
+                        @foreach($post->comments as $comment)
+                            <div class="comment">
+                                <p>{{ $comment->content }}</p>
+                                <div class="comment-author">Автор: {{ $comment->user->name }}</div>
+                                <!-- Кнопки для редактирования и удаления комментария -->
+                                <div class="comment-buttons">
+                                    @can('delete', $comment)
+                                        <a class="btn btn-warning" href="{{ route('edit.comment', $comment->id) }}">Редактировать</a>
+                                        <form action="{{ route('destroy.comment', $comment->id) }}" method="post">
+                                            <input type="hidden" name="commentId" value="{{ $comment->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены?')">Удалить</button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 @endsection

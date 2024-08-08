@@ -33,7 +33,13 @@ class PostController extends Controller
            'title' => 'required|max:255',
             'content' => 'required',
             'category_id' => 'required|numeric|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        $fileName = time().$request->file('image')->getClientOriginalName();
+
+        $image_path = $request->file('image')->storeAs('images', $fileName, 'public');
+        $validated['image'] = '/storage/'.$image_path;
 
         Auth::user()->posts()->create($validated);
         return redirect()->route('posts.index')->with('message','Post saved');
@@ -53,9 +59,9 @@ class PostController extends Controller
     public function update(Request $request, Post $post)
     {
         $post->update([
-            'title'=>$request->title,
-            'content'=>$request->content,
-            'category_id'=>$request->category_id
+            'title'=>$request->input('title'),
+            'content'=>$request->input('content'),
+            'category_id'=>$request->input('category_id'),
         ]);
         return redirect()->route('posts.index');
     }
